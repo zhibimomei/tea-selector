@@ -85,6 +85,7 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             background: #f9f9f9;
+            border: 8px solid #fff;
         }
         
         .wheel-item {
@@ -103,6 +104,7 @@
             padding: 5px;
             color: #333;
             overflow: hidden;
+            border-radius: 5px;
         }
         
         .pointer {
@@ -141,6 +143,7 @@
         
         .spin-btn:active {
             transform: translateY(1px);
+            box-shadow: 0 3px 10px rgba(45, 143, 116, 0.4);
         }
         
         .spin-btn:disabled {
@@ -205,6 +208,7 @@
             border-radius: 20px;
             padding: 25px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
         }
         
         .shop-list h2 {
@@ -231,6 +235,8 @@
             transition: all 0.3s;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             border: 1px solid #eaeaea;
+            position: relative;
+            cursor: pointer;
         }
         
         .shop-item:hover {
@@ -245,6 +251,43 @@
             border-color: #2d8f74;
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(45, 143, 116, 0.2);
+        }
+        
+        /* 新增：店铺介绍提示框样式 */
+        .shop-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            margin-bottom: 8px;
+            max-width: 200px;
+            text-align: center;
+        }
+        
+        .shop-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.85);
+        }
+        
+        .shop-item:hover .shop-tooltip {
+            opacity: 1;
+            visibility: visible;
         }
         
         .footer {
@@ -295,6 +338,13 @@
             .shops-container {
                 grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             }
+            
+            /* 移动端调整提示框样式 */
+            .shop-tooltip {
+                font-size: 11px;
+                max-width: 150px;
+                white-space: normal;
+            }
         }
         
         @keyframes fadeIn {
@@ -305,6 +355,26 @@
         .fade-in {
             animation: fadeIn 0.8s ease-out;
         }
+        
+        /* 新增样式：彩色方块背景 */
+        .color-1 { background-color: #FFCDD2; }
+        .color-2 { background-color: #F8BBD0; }
+        .color-3 { background-color: #E1BEE7; }
+        .color-4 { background-color: #D1C4E9; }
+        .color-5 { background-color: #C5CAE9; }
+        .color-6 { background-color: #BBDEFB; }
+        .color-7 { background-color: #B3E5FC; }
+        .color-8 { background-color: #B2EBF2; }
+        .color-9 { background-color: #B2DFDB; }
+        .color-10 { background-color: #C8E6C9; }
+        .color-11 { background-color: #DCEDC8; }
+        .color-12 { background-color: #F0F4C3; }
+        .color-13 { background-color: #FFECB3; }
+        .color-14 { background-color: #FFE0B2; }
+        .color-15 { background-color: #FFCCBC; }
+        .color-16 { background-color: #D7CCC8; }
+        .color-17 { background-color: #CFD8DC; }
+        .color-18 { background-color: #F5F5F5; }
     </style>
 </head>
 <body>
@@ -345,15 +415,58 @@
     </div>
 
     <script>
-        // 奶茶店列表
+        // 完整的奶茶店列表
         const milkTeaShops = [
             "喜茶", "奈雪的茶", "一点点", "COCO", "蜜雪冰城", 
             "茶百道", "古茗", "霸王茶姬", "益禾堂", "cuida", 
             "koi", "吃茶三千", "sevenbus", "萃春风", "茶月山", 
             "茶满方庭", "宝藏绿洲", "猿乐山", "linlee手打柠檬茶", 
             "春阳茶事", "爷爷不泡茶", "一树一叶", "茶山派", 
-            "瑞幸咖啡", "星巴克", "茶武纪"
+            "瑞幸咖啡", "星巴克", "茶武纪", "壶见", "永民手作", 
+            "茉莉奶白", "茶巢", "宇宙治茶", "BONJOUR本就", 
+            "红茶公司", "陈文鼎", "快乐番薯", "沪上阿姨", "菟竹集"
         ];
+        
+        // 奶茶店介绍数据
+        const shopIntroductions = {
+            "喜茶": "新式茶饮开创者，芝士茶首创品牌",
+            "奈雪的茶": "茶+软欧包的双品类模式开创者",
+            "一点点": "台湾连锁茶饮品牌，以波霸奶茶闻名",
+            "COCO": "国际连锁茶饮品牌，珍珠奶茶是其经典",
+            "蜜雪冰城": "高性价比茶饮品牌，主打冰淇淋与茶",
+            "茶百道": "源自四川成都，以豆乳玉麒麟为特色",
+            "古茗": "源自浙江台州，主打水果茶与奶茶",
+            "霸王茶姬": "国风茶饮品牌，以原叶鲜奶茶为特色",
+            "益禾堂": "主打平价烤奶，校园周边常见品牌",
+            "cuida": "主打新鲜水果茶，台湾风味",
+            "koi": "源自新加坡，黄金珍珠奶茶是其招牌",
+            "吃茶三千": "台湾品牌，以现萃茶和国王珍珠奶茶闻名",
+            "sevenbus": "原创豆乳奶茶开创者",
+            "萃春风": "主打健康轻茶饮，清新风格",
+            "茶月山": "以月光白茶为特色，文艺风格茶饮",
+            "茶满方庭": "中式庭院风格，主打传统茶饮",
+            "宝藏绿洲": "健康果茶品牌，主打低糖低卡",
+            "猿乐山": "日式风格茶饮，抹茶系列是其特色",
+            "linlee手打柠檬茶": "专注手打柠檬茶，香水柠檬为特色",
+            "春阳茶事": "台湾品牌，以黑糖珍珠奶茶为特色",
+            "爷爷不泡茶": "主打鲜果茶与芝士茶，武汉本土品牌",
+            "一树一叶": "清新自然风格，主打鲜果茶",
+            "茶山派": "福建本土品牌，以武夷岩茶为特色",
+            "瑞幸咖啡": "咖啡品牌，但生椰系列饮品广受欢迎",
+            "星巴克": "全球咖啡连锁，茶瓦纳系列为特色茶饮",
+            "茶武纪": "国潮风格茶饮，以功夫泡茶为特色",
+            "壶见": "福建特色茶饮，主打闽式功夫茶",
+            "永民手作": "手作珍珠为特色，台湾风味",
+            "茉莉奶白": "主打茉莉花茶与鲜奶结合",
+            "茶巢": "主打巢蜜系列，甜而不腻",
+            "宇宙治茶": "创意茶饮品牌，主打独特口味组合",
+            "BONJOUR本就": "法式风格茶饮，优雅浪漫",
+            "红茶公司": "专注红茶品类，提供多种红茶选择",
+            "陈文鼎": "珍珠奶茶专门店，珍珠现煮现卖",
+            "快乐番薯": "主打番薯系列饮品，健康特色",
+            "沪上阿姨": "上海特色，血糯米奶茶为招牌",
+            "菟竹集": "养生茶饮，主打竹蔗茅根水等传统饮品"
+        };
         
         const wheel = document.getElementById('wheel');
         const spinBtn = document.getElementById('spin-btn');
@@ -368,25 +481,11 @@
             wheel.innerHTML = '';
             const anglePerItem = 360 / milkTeaShops.length;
             
-            // 清新配色方案
-            const colors = [
-                '#E3F2FD', '#E8F5E9', '#FFF3E0', '#FCE4EC', '#E0F2F1',
-                '#F3E5F5', '#E8F5E9', '#FFF8E1', '#F1F8E9', '#E0F7FA',
-                '#F3E5F5', '#E8F5E9', '#FFF3E0', '#FCE4EC', '#E0F2F1',
-                '#F3E5F5', '#E8F5E9', '#FFF8E1', '#F1F8E9', '#E0F7FA',
-                '#F3E5F5', '#E8F5E9', '#FFF3E0', '#FCE4EC', '#E0F2F1',
-                '#F3E5F5'
-            ];
-            
             milkTeaShops.forEach((shop, index) => {
                 const item = document.createElement('div');
-                item.className = 'wheel-item';
+                item.className = `wheel-item color-${(index % 18) + 1}`;
                 item.textContent = shop;
-                item.style.backgroundColor = colors[index % colors.length];
                 item.style.transform = `rotate(${index * anglePerItem}deg)`;
-                
-                // 添加文字方向调整
-                item.style.transform += ` skew(${90 - anglePerItem}deg)`;
                 
                 wheel.appendChild(item);
             });
@@ -403,8 +502,22 @@
                 shopItem.className = 'shop-item';
                 shopItem.textContent = shop;
                 shopItem.dataset.shop = shop;
+                
+                // 添加介绍提示框
+                const tooltip = document.createElement('div');
+                tooltip.className = 'shop-tooltip';
+                tooltip.textContent = shopIntroductions[shop] || '暂无介绍';
+                shopItem.appendChild(tooltip);
+                
                 shopsContainer.appendChild(shopItem);
             });
+        }
+        
+        // 触感反馈函数
+        function vibrate() {
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
         }
         
         // 旋转转盘
@@ -415,6 +528,9 @@
             spinBtn.disabled = true;
             result.textContent = "旋转中...";
             result.classList.remove('highlight');
+            
+            // 添加触感反馈
+            vibrate();
             
             // 清除之前的选择
             document.querySelectorAll('.shop-item').forEach(item => {
@@ -441,10 +557,8 @@
                 // 高亮显示选中的店铺
                 highlightSelectedShop(randomIndex);
                 
-                // 振动反馈（如果设备支持）
-                if (navigator.vibrate) {
-                    navigator.vibrate(100);
-                }
+                // 再次添加触感反馈
+                vibrate();
             }, 3500);
         }
         
@@ -471,6 +585,8 @@
         
         // 绑定按钮点击事件
         spinBtn.addEventListener('click', spinWheel);
+        spinBtn.addEventListener('mousedown', vibrate);
+        spinBtn.addEventListener('touchstart', vibrate);
         
         // 初始化
         initWheel();
