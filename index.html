@@ -237,6 +237,8 @@
             border: 1px solid #eaeaea;
             position: relative;
             cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         
         .shop-item:hover {
@@ -285,9 +287,45 @@
             border-top-color: rgba(0, 0, 0, 0.85);
         }
         
-        .shop-item:hover .shop-tooltip {
+        /* 桌面端悬停效果 */
+        @media (hover: hover) and (pointer: fine) {
+            .shop-item:hover .shop-tooltip {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+        
+        /* 移动端激活状态 */
+        .shop-item.active .shop-tooltip {
             opacity: 1;
             visibility: visible;
+        }
+        
+        /* 移动端优化：增加触摸区域 */
+        @media (max-width: 768px) {
+            .shop-item {
+                padding: 15px 10px;
+                min-height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .shop-tooltip {
+                font-size: 11px;
+                max-width: 150px;
+                white-space: normal;
+                bottom: 100%; /* 确保提示框在店铺项上方 */
+                top: auto; /* 重置顶部定位 */
+                margin-bottom: 8px;
+                margin-top: 0;
+            }
+            
+            .shop-tooltip::after {
+                top: 100%;
+                border-top-color: rgba(0, 0, 0, 0.85);
+                border-bottom-color: transparent; /* 重置底部边框颜色 */
+            }
         }
         
         .footer {
@@ -338,13 +376,6 @@
             .shops-container {
                 grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             }
-            
-            /* 移动端调整提示框样式 */
-            .shop-tooltip {
-                font-size: 11px;
-                max-width: 150px;
-                white-space: normal;
-            }
         }
         
         @keyframes fadeIn {
@@ -375,6 +406,12 @@
         .color-16 { background-color: #D7CCC8; }
         .color-17 { background-color: #CFD8DC; }
         .color-18 { background-color: #F5F5F5; }
+        
+        /* 点击动画效果 */
+        .shop-item:active {
+            transform: scale(0.95);
+            transition: transform 0.1s;
+        }
     </style>
 </head>
 <body>
@@ -475,6 +512,7 @@
         
         let isSpinning = false;
         let currentRotation = 0;
+        let activeShopItem = null; // 当前激活的店铺项
         
         // 初始化转盘
         function initWheel() {
@@ -509,8 +547,52 @@
                 tooltip.textContent = shopIntroductions[shop] || '暂无介绍';
                 shopItem.appendChild(tooltip);
                 
+                // 添加点击事件
+                shopItem.addEventListener('click', handleShopItemClick);
+                
                 shopsContainer.appendChild(shopItem);
             });
+        }
+        
+        // 处理店铺项点击事件
+        function handleShopItemClick(e) {
+            const shopItem = e.currentTarget;
+            
+            // 添加触感反馈
+            vibrate();
+            
+            // 如果点击的是已激活的项，则关闭提示
+            if (shopItem === activeShopItem) {
+                shopItem.classList.remove('active');
+                activeShopItem = null;
+                return;
+            }
+            
+            // 移除之前激活的项
+            if (activeShopItem) {
+                activeShopItem.classList.remove('active');
+            }
+            
+            // 激活当前项
+            shopItem.classList.add('active');
+            activeShopItem = shopItem;
+            
+            // 在移动端，点击外部区域关闭提示
+            if (window.matchMedia('(max-width: 768px)').matches) {
+                // 添加一次性点击事件监听器，点击页面其他区域关闭提示
+                const closeTooltip = (e) => {
+                    if (!shopItem.contains(e.target)) {
+                        shopItem.classList.remove('active');
+                        activeShopItem = null;
+                        document.removeEventListener('click', closeTooltip);
+                    }
+                };
+                
+                // 延迟添加事件监听器，避免立即触发
+                setTimeout(() => {
+                    document.addEventListener('click', closeTooltip);
+                }, 10);
+            }
         }
         
         // 触感反馈函数
@@ -535,6 +617,7 @@
             // 清除之前的选择
             document.querySelectorAll('.shop-item').forEach(item => {
                 item.classList.remove('selected');
+                item.classList.remove('active');
             });
             
             // 随机旋转角度（至少旋转5圈以上）
