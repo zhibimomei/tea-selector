@@ -2,115 +2,78 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>厦门奶茶店选择器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清新奶茶店选择器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: linear-gradient(135deg, #e0f7fa 0%, #f9fbe7 100%);
-            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            color: #4a4a4a;
             min-height: 100vh;
-            padding: 20px 15px;
-            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
         
         .container {
-            max-width: 100%;
-            margin: 0 auto;
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            padding: 30px;
+            position: relative;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 25px;
-            padding: 15px 0;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
         }
         
         .header h1 {
-            font-size: 26px;
-            color: #26a69a;
-            font-weight: 600;
-            margin-bottom: 8px;
+            font-size: 32px;
+            color: #2d8f74;
+            margin-bottom: 10px;
+            font-weight: 700;
             letter-spacing: 1px;
         }
         
-        .subtitle {
+        .header p {
             font-size: 16px;
-            color: #66bb6a;
+            color: #7a7a7a;
         }
         
-        .five-elements {
+        .content {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
-            margin-bottom: 25px;
-        }
-        
-        .element {
-            width: 19%;
-            height: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-            border-radius: 12px;
-            font-size: 14px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-        
-        .element.metal {
-            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
-            color: #00695c;
-        }
-        
-        .element.wood {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            color: #2e7d32;
-        }
-        
-        .element.water {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            color: #1565c0;
-        }
-        
-        .element.fire {
-            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-            color: #c62828;
-        }
-        
-        .element.earth {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-            color: #ef6c00;
-        }
-        
-        .element-icon {
-            font-size: 26px;
-            margin-bottom: 5px;
+            gap: 30px;
+            margin-bottom: 30px;
         }
         
         .wheel-section {
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 20px;
-            padding: 25px 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
         .wheel-container {
             position: relative;
             width: 280px;
             height: 280px;
-            margin: 0 auto 20px;
+            margin-bottom: 25px;
         }
         
         .wheel {
@@ -121,7 +84,7 @@
             transition: transform 3.5s cubic-bezier(0.2, 0.8, 0.3, 0.9);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            background: #fafafa;
+            background: #f9f9f9;
         }
         
         .wheel-item {
@@ -135,11 +98,11 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: 600;
             padding: 5px;
-            overflow: hidden;
             color: #333;
-            font-weight: 500;
+            overflow: hidden;
         }
         
         .pointer {
@@ -147,34 +110,40 @@
             top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 25px;
-            height: 35px;
-            background-color: #ff7043;
+            width: 30px;
+            height: 40px;
+            background: #ff7b54;
             clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
             z-index: 10;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
         }
         
-        .spin-button {
-            display: block;
-            width: 200px;
-            margin: 0 auto;
-            padding: 14px 0;
-            background: linear-gradient(to right, #26a69a, #4db6ac);
+        .spin-btn {
+            background: linear-gradient(135deg, #2d8f74 0%, #3bac8c 100%);
             color: white;
             border: none;
-            border-radius: 30px;
-            font-size: 17px;
+            padding: 14px 40px;
+            font-size: 18px;
+            border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 6px 15px rgba(38, 166, 154, 0.3);
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(45, 143, 116, 0.3);
             font-weight: 600;
-            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .spin-button:active {
-            transform: scale(0.98);
+        .spin-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(45, 143, 116, 0.4);
         }
         
-        .spin-button:disabled {
+        .spin-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .spin-btn:disabled {
             background: #cccccc;
             cursor: not-allowed;
             transform: none;
@@ -182,42 +151,47 @@
         }
         
         .result-section {
-            background-color: rgba(255, 255, 255, 0.8);
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #f8fbfa;
             border-radius: 20px;
-            padding: 25px 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
         
         .result-title {
-            font-size: 16px;
-            color: #66bb6a;
+            font-size: 18px;
+            color: #7a7a7a;
             margin-bottom: 15px;
-            font-weight: 500;
+            text-align: center;
         }
         
         .result {
-            font-size: 24px;
-            color: #26a69a;
-            font-weight: 600;
-            min-height: 60px;
+            font-size: 28px;
+            color: #2d8f74;
+            font-weight: 700;
+            text-align: center;
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 15px;
-            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            background: white;
             border-radius: 15px;
-            border: 1px dashed #81c784;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             transition: all 0.3s;
-            margin-bottom: 10px;
+            border: 2px dashed #c1e6d9;
         }
         
         .result.highlight {
             animation: pulse 1s ease-in-out;
-            background-color: rgba(224, 247, 250, 0.7);
-            border-color: #26a69a;
+            background: #e8f6f1;
+            border-color: #2d8f74;
         }
         
         @keyframes pulse {
@@ -226,113 +200,100 @@
             100% { transform: scale(1); }
         }
         
-        .result-note {
-            font-size: 14px;
-            color: #81c784;
-        }
-        
         .shop-list {
-            background-color: rgba(255, 255, 255, 0.8);
+            background: #f8fbfa;
             border-radius: 20px;
-            padding: 25px 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
         
         .shop-list h2 {
-            font-size: 18px;
-            color: #26a69a;
             text-align: center;
+            color: #2d8f74;
             margin-bottom: 20px;
-            font-weight: 600;
-            position: relative;
-            padding-bottom: 12px;
-        }
-        
-        .shop-list h2::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(to right, #26a69a, #81c784);
-            border-radius: 3px;
+            font-size: 22px;
+            font-weight: 700;
         }
         
         .shops-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 12px;
         }
         
         .shop-item {
-            padding: 12px 5px;
+            padding: 12px 8px;
             text-align: center;
-            background-color: rgba(255, 255, 255, 0.9);
+            background: white;
             border-radius: 10px;
-            font-size: 13px;
-            border: 1px solid #e0e0e0;
+            font-size: 14px;
             font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eaeaea;
+        }
+        
+        .shop-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         }
         
         .shop-item.selected {
-            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
-            color: #00897b;
-            font-weight: 600;
-            border-color: #4db6ac;
+            background: linear-gradient(135deg, #e8f6f1 0%, #d1ede3 100%);
+            color: #2d8f74;
+            font-weight: 700;
+            border-color: #2d8f74;
             transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(45, 143, 116, 0.2);
         }
         
         .footer {
             text-align: center;
             margin-top: 25px;
-            padding-top: 15px;
-            color: #81c784;
-            font-size: 13px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+            color: #7a7a7a;
+            font-size: 14px;
         }
         
-        .decoration {
+        .bubble {
             position: absolute;
-            width: 120px;
-            height: 120px;
-            opacity: 0.1;
-            pointer-events: none;
+            background: rgba(45, 143, 116, 0.1);
+            border-radius: 50%;
             z-index: -1;
         }
         
-        .decoration-1 {
-            top: 5%;
-            left: 5%;
-            background: radial-gradient(circle, #26a69a 0%, transparent 70%);
-            border-radius: 50%;
+        .bubble-1 {
+            width: 100px;
+            height: 100px;
+            top: -30px;
+            right: -30px;
         }
         
-        .decoration-2 {
-            bottom: 10%;
-            right: 5%;
-            background: radial-gradient(ellipse, #66bb6a 0%, transparent 70%);
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        .bubble-2 {
+            width: 150px;
+            height: 150px;
+            bottom: -50px;
+            left: -50px;
         }
         
-        @media (max-width: 360px) {
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
             .wheel-container {
                 width: 250px;
                 height: 250px;
             }
             
+            .result {
+                font-size: 24px;
+                min-height: 70px;
+            }
+            
             .shops-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .element {
-                height: 70px;
-                font-size: 13px;
-            }
-            
-            .element-icon {
-                font-size: 22px;
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             }
         }
         
@@ -341,72 +302,50 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .container > * {
-            animation: fadeIn 0.6s ease-out;
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
         }
     </style>
 </head>
 <body>
-    <div class="decoration decoration-1"></div>
-    <div class="decoration decoration-2"></div>
+    <div class="bubble bubble-1"></div>
+    <div class="bubble bubble-2"></div>
     
-    <div class="container">
+    <div class="container fade-in">
         <div class="header">
-            <h1>厦门奶茶店选择器</h1>
-            <p class="subtitle">让选择变得更简单 · 五行茶意随心所选</p>
+            <h1>🍵 奶茶店选择器 🍵</h1>
+            <p>点击旋转，让命运决定你今天喝哪家奶茶！</p>
         </div>
         
-        <div class="five-elements">
-            <div class="element metal">
-                <div class="element-icon">⛰️</div>
-                <div>金 · 纯净</div>
+        <div class="content">
+            <div class="wheel-section">
+                <div class="wheel-container">
+                    <div class="pointer"></div>
+                    <div class="wheel" id="wheel"></div>
+                </div>
+                <button class="spin-btn" id="spin-btn">
+                    <i class="fas fa-redo-alt"></i> 开始旋转
+                </button>
             </div>
-            <div class="element wood">
-                <div class="element-icon">🌱</div>
-                <div>木 · 生长</div>
+            
+            <div class="result-section">
+                <div class="result-title">今日推荐</div>
+                <div class="result" id="result">等待选择中...</div>
             </div>
-            <div class="element water">
-                <div class="element-icon">💧</div>
-                <div>水 · 流动</div>
-            </div>
-            <div class="element fire">
-                <div class="element-icon">🔥</div>
-                <div>火 · 热情</div>
-            </div>
-            <div class="element earth">
-                <div class="element-icon">🌏</div>
-                <div>土 · 包容</div>
-            </div>
-        </div>
-        
-        <div class="wheel-section">
-            <div class="wheel-container">
-                <div class="pointer"></div>
-                <div class="wheel" id="wheel"></div>
-            </div>
-            <button class="spin-button" id="spin-button">
-                开始旋转
-            </button>
-        </div>
-        
-        <div class="result-section">
-            <div class="result-title">今日奶茶去处</div>
-            <div class="result" id="result">等待选择...</div>
-            <p class="result-note">转盘停止后，选中的奶茶店会高亮显示</p>
         </div>
         
         <div class="shop-list">
-            <h2>厦门奶茶店列表</h2>
+            <h2>奶茶店列表</h2>
             <div class="shops-container" id="shops-container"></div>
         </div>
         
         <div class="footer">
-            <p>清新茶意 · 随心所选 · 厦门奶茶指南</p>
+            <p>清新茶意 · 随心所选 · 让每一天都有小确幸</p>
         </div>
     </div>
 
     <script>
-        // 厦门奶茶店列表
+        // 奶茶店列表
         const milkTeaShops = [
             "喜茶", "奈雪的茶", "一点点", "COCO", "蜜雪冰城", 
             "茶百道", "古茗", "霸王茶姬", "益禾堂", "cuida", 
@@ -417,7 +356,7 @@
         ];
         
         const wheel = document.getElementById('wheel');
-        const spinButton = document.getElementById('spin-button');
+        const spinBtn = document.getElementById('spin-btn');
         const result = document.getElementById('result');
         const shopsContainer = document.getElementById('shops-container');
         
@@ -429,14 +368,14 @@
             wheel.innerHTML = '';
             const anglePerItem = 360 / milkTeaShops.length;
             
-            // 创建清新配色方案
+            // 清新配色方案
             const colors = [
-                '#e1f5fe', '#f3e5f5', '#e8f5e9', '#fff3e0', '#fce4ec',
-                '#e0f2f1', '#f1f8e9', '#fff8e1', '#f9fbe7', '#e8eaf6',
-                '#e0f7fa', '#f3e5f5', '#e8f5e9', '#fff3e0', '#fce4ec',
-                '#e0f2f1', '#f1f8e9', '#fff8e1', '#f9fbe7', '#e8eaf6',
-                '#e0f7fa', '#f3e5f5', '#e8f5e9', '#fff3e0', '#fce4ec',
-                '#e0f2f1'
+                '#E3F2FD', '#E8F5E9', '#FFF3E0', '#FCE4EC', '#E0F2F1',
+                '#F3E5F5', '#E8F5E9', '#FFF8E1', '#F1F8E9', '#E0F7FA',
+                '#F3E5F5', '#E8F5E9', '#FFF3E0', '#FCE4EC', '#E0F2F1',
+                '#F3E5F5', '#E8F5E9', '#FFF8E1', '#F1F8E9', '#E0F7FA',
+                '#F3E5F5', '#E8F5E9', '#FFF3E0', '#FCE4EC', '#E0F2F1',
+                '#F3E5F5'
             ];
             
             milkTeaShops.forEach((shop, index) => {
@@ -473,7 +412,7 @@
             if (isSpinning) return;
             
             isSpinning = true;
-            spinButton.disabled = true;
+            spinBtn.disabled = true;
             result.textContent = "旋转中...";
             result.classList.remove('highlight');
             
@@ -494,13 +433,18 @@
             
             // 旋转结束后显示结果
             setTimeout(() => {
-                result.textContent = `今日宜饮：${milkTeaShops[randomIndex]}`;
+                result.textContent = `今天喝：${milkTeaShops[randomIndex]}！`;
                 result.classList.add('highlight');
                 isSpinning = false;
-                spinButton.disabled = false;
+                spinBtn.disabled = false;
                 
                 // 高亮显示选中的店铺
                 highlightSelectedShop(randomIndex);
+                
+                // 振动反馈（如果设备支持）
+                if (navigator.vibrate) {
+                    navigator.vibrate(100);
+                }
             }, 3500);
         }
         
@@ -526,7 +470,7 @@
         }
         
         // 绑定按钮点击事件
-        spinButton.addEventListener('click', spinWheel);
+        spinBtn.addEventListener('click', spinWheel);
         
         // 初始化
         initWheel();
