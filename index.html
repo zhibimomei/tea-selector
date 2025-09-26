@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>厦门奶茶店选择器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #f9fbe7 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px 15px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px 0;
+        }
+        
+        .header h1 {
+            font-size: 26px;
+            color: #26a69a;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #66bb6a;
+        }
+        
+        .five-elements {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+        
+        .element {
+            width: 19%;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .element.metal {
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            color: #00695c;
+        }
+        
+        .element.wood {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: #2e7d32;
+        }
+        
+        .element.water {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1565c0;
+        }
+        
+        .element.fire {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #c62828;
+        }
+        
+        .element.earth {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            color: #ef6c00;
+        }
+        
+        .element-icon {
+            font-size: 26px;
+            margin-bottom: 5px;
+        }
+        
+        .wheel-section {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 25px 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .wheel-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 20px;
+        }
+        
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            transition: transform 3.5s cubic-bezier(0.2, 0.8, 0.3, 0.9);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background: #fafafa;
+        }
+        
+        .wheel-item {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            left: 0;
+            top: 0;
+            transform-origin: right bottom;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 13px;
+            padding: 5px;
+            overflow: hidden;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 35px;
+            background-color: #ff7043;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            z-index: 10;
+        }
+        
+        .spin-button {
+            display: block;
+            width: 200px;
+            margin: 0 auto;
+            padding: 14px 0;
+            background: linear-gradient(to right, #26a69a, #4db6ac);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 17px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(38, 166, 154, 0.3);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .spin-button:active {
+            transform: scale(0.98);
+        }
+        
+        .spin-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .result-section {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 25px 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .result-title {
+            font-size: 16px;
+            color: #66bb6a;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .result {
+            font-size: 24px;
+            color: #26a69a;
+            font-weight: 600;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            border: 1px dashed #81c784;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+        
+        .result.highlight {
+            animation: pulse 1s ease-in-out;
+            background-color: rgba(224, 247, 250, 0.7);
+            border-color: #26a69a;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .result-note {
+            font-size: 14px;
+            color: #81c784;
+        }
+        
+        .shop-list {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 25px 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .shop-list h2 {
+            font-size: 18px;
+            color: #26a69a;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        .shop-list h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, #26a69a, #81c784);
+            border-radius: 3px;
+        }
+        
+        .shops-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .shop-item {
+            padding: 12px 5px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            font-size: 13px;
+            border: 1px solid #e0e0e0;
+            font-weight: 500;
+        }
+        
+        .shop-item.selected {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            color: #00897b;
+            font-weight: 600;
+            border-color: #4db6ac;
+            transform: scale(1.05);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            color: #81c784;
+            font-size: 13px;
+        }
+        
+        .decoration {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .decoration-1 {
+            top: 5%;
+            left: 5%;
+            background: radial-gradient(circle, #26a69a 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .decoration-2 {
+            bottom: 10%;
+            right: 5%;
+            background: radial-gradient(ellipse, #66bb6a 0%, transparent 70%);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        }
+        
+        @media (max-width: 360px) {
+            .wheel-container {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .shops-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .element {
+                height: 70px;
+                font-size: 13px;
+            }
+            
+            .element-icon {
+                font-size: 22px;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container > * {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="decoration decoration-1"></div>
+    <div class="decoration decoration-2"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>厦门奶茶店选择器</h1>
+            <p class="subtitle">让选择变得更简单 · 五行茶意随心所选</p>
+        </div>
+        
+        <div class="five-elements">
+            <div class="element metal">
+                <div class="element-icon">⛰️</div>
+                <div>金 · 纯净</div>
+            </div>
+            <div class="element wood">
+                <div class="element-icon">🌱</div>
+                <div>木 · 生长</div>
+            </div>
+            <div class="element water">
+                <div class="element-icon">💧</div>
+                <div>水 · 流动</div>
+            </div>
+            <div class="element fire">
+                <div class="element-icon">🔥</div>
+                <div>火 · 热情</div>
+            </div>
+            <div class="element earth">
+                <div class="element-icon">🌏</div>
+                <div>土 · 包容</div>
+            </div>
+        </div>
+        
+        <div class="wheel-section">
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <div class="wheel" id="wheel"></div>
+            </div>
+            <button class="spin-button" id="spin-button">
+                开始旋转
+            </button>
+        </div>
+        
+        <div class="result-section">
+            <div class="result-title">今日奶茶去处</div>
+            <div class="result" id="result">等待选择...</div>
+            <p class="result-note">转盘停止后，选中的奶茶店会高亮显示</p>
+        </div>
+        
+        <div class="shop-list">
+            <h2>厦门奶茶店列表</h2>
+            <div class="shops-container" id="shops-container"></div>
+        </div>
+        
+        <div class="footer">
+            <p>清新茶意 · 随心所选 · 厦门奶茶指南</p>
+        </div>
+    </div>
+
+    <script>
+        // 厦门奶茶店列表
+        const milkTeaShops = [
+            "喜茶", "奈雪的茶", "一点点", "COCO", "蜜雪冰城", 
+            "茶百道", "古茗", "霸王茶姬", "益禾堂", "cuida", 
+            "koi", "吃茶三千", "sevenbus", "萃春风", "茶月山", 
+            "茶满方庭", "宝藏绿洲", "猿乐山", "linlee手打柠檬茶", 
+            "春阳茶事", "爷爷不泡茶", "一树一叶", "茶山派", 
+            "瑞幸咖啡", "星巴克", "茶武纪"
+        ];
+        
+        const wheel = document.getElementById('wheel');
+        const spinButton = document.getElementById('spin-button');
+        const result = document.getElementById('result');
+        const shopsContainer = document.getElementById('shops-container');
+        
+        let isSpinning = false;
+        let currentRotation = 0;
+        
+        // 初始化转盘
+        function initWheel() {
+            wheel.innerHTML = '';
+            const anglePerItem = 360 / milkTeaShops.length;
+            
+            // 创建清新配色方案
+            const colors = [
+                '#e1f5fe', '#f3e5f5', '#e8f5e9', '#fff3e0', '#fce4ec',
+                '#e0f2f1', '#f1f8e9', '#fff8e1', '#f9fbe7', '#e8eaf6',
+                '#e0f7fa', '#f3e5f5', '#e8f5e9', '#fff3e0', '#fce4ec',
+                '#e0f2f1', '#f1f8e9', '#fff8e1', '#f9fbe7', '#e8eaf6',
+                '#e0f7fa', '#f3e5f5', '#e8f5e9', '#fff3e0', '#fce4ec',
+                '#e0f2f1'
+            ];
+            
+            milkTeaShops.forEach((shop, index) => {
+                const item = document.createElement('div');
+                item.className = 'wheel-item';
+                item.textContent = shop;
+                item.style.backgroundColor = colors[index % colors.length];
+                item.style.transform = `rotate(${index * anglePerItem}deg)`;
+                
+                // 添加文字方向调整
+                item.style.transform += ` skew(${90 - anglePerItem}deg)`;
+                
+                wheel.appendChild(item);
+            });
+            
+            // 初始化店铺列表
+            initShopList();
+        }
+        
+        // 初始化店铺列表显示
+        function initShopList() {
+            shopsContainer.innerHTML = '';
+            milkTeaShops.forEach(shop => {
+                const shopItem = document.createElement('div');
+                shopItem.className = 'shop-item';
+                shopItem.textContent = shop;
+                shopItem.dataset.shop = shop;
+                shopsContainer.appendChild(shopItem);
+            });
+        }
+        
+        // 旋转转盘
+        function spinWheel() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            spinButton.disabled = true;
+            result.textContent = "旋转中...";
+            result.classList.remove('highlight');
+            
+            // 清除之前的选择
+            document.querySelectorAll('.shop-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // 随机旋转角度（至少旋转5圈以上）
+            const extraSpins = 5;
+            const randomIndex = Math.floor(Math.random() * milkTeaShops.length);
+            const anglePerItem = 360 / milkTeaShops.length;
+            const targetAngle = 360 * extraSpins + (360 - (randomIndex * anglePerItem)) - (anglePerItem / 2);
+            
+            // 更新旋转角度
+            currentRotation += targetAngle;
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+            
+            // 旋转结束后显示结果
+            setTimeout(() => {
+                result.textContent = `今日宜饮：${milkTeaShops[randomIndex]}`;
+                result.classList.add('highlight');
+                isSpinning = false;
+                spinButton.disabled = false;
+                
+                // 高亮显示选中的店铺
+                highlightSelectedShop(randomIndex);
+            }, 3500);
+        }
+        
+        // 高亮显示选中的店铺
+        function highlightSelectedShop(index) {
+            const selectedShop = milkTeaShops[index];
+            const shopItems = document.querySelectorAll('.shop-item');
+            
+            shopItems.forEach(item => {
+                if (item.dataset.shop === selectedShop) {
+                    item.classList.add('selected');
+                    
+                    // 平滑滚动到选中的项目
+                    setTimeout(() => {
+                        item.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center',
+                            inline: 'center'
+                        });
+                    }, 500);
+                }
+            });
+        }
+        
+        // 绑定按钮点击事件
+        spinButton.addEventListener('click', spinWheel);
+        
+        // 初始化
+        initWheel();
+    </script>
+</body>
+</html>
